@@ -1,1 +1,1 @@
-{}
+{:duct.profile/test [:duct/profile]}

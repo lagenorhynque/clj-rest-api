@@ -1,16 +1,22 @@
 {:duct.profile/base
  {:duct.core/project-ns clj-rest-api
 
-  :duct.router/ataraxy
-  {:routes {[:get "/example"] [:clj-rest-api.handler/example]}}
+  :duct.server/pedestal
+  {:service #:io.pedestal.http{:routes #ig/ref :clj-rest-api.routes/routes
+                               :host #duct/env "SERVER_HOST"
+                               :port #duct/env ["SERVER_PORT" Int :or 9999]}}
 
-  :clj-rest-api.handler/example
+  :clj-rest-api.routes/routes
   {:db #ig/ref :duct.database/sql}}
 
  :duct.profile/dev   #duct/include "dev"
+ :duct.profile/test  #duct/include "test"
  :duct.profile/local #duct/include "local"
  :duct.profile/prod  {}
 
  :duct.module/logging {}
- :duct.module.web/api {}
- :duct.module/sql {}}
+
+ :duct.module/sql
+ {:database-url #duct/env "DATABASE_URL"}
+
+ :duct.module/pedestal {}}

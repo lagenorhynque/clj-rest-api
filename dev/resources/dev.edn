@@ -1,2 +1,2 @@
-{:duct.database/sql
- {:connection-uri "jdbc:postgresql://localhost/postgres"}}
+{:duct.database.sql/hikaricp
+ {:jdbc-url "jdbc:mysql://localhost:3316/aqoursql?user=aqoursql_dev&password=password123"}}
