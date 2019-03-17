@@ -7,4 +7,6 @@
   (response/ok {:data (db.song/find-songs db tx-data)}))
 
 (defn fetch-song-by-id [{:keys [db tx-data]}]
-  (response/ok {:data (db.song/find-song-by-id db (:song-id tx-data))}))
+  (if-let [song (db.song/find-song-by-id db (:song-id tx-data))]
+    (response/ok {:data song})
+    (response/not-found {:errors {:song-id "doesn't exist"}})))
