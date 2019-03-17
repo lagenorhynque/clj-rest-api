@@ -1,0 +1,53 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: /root/clj-rest-api
+    docker:
+    - image: clojure:lein-2.9.1-alpine
+      environment:
+        TZ: Asia/Tokyo
+        TEST_DATABASE_URL: "jdbc:mysql://localhost:3306/aqoursql_test?user=aqoursql_dev&password=password123"
+    - image: mariadb:10.4.0
+      command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_USER: aqoursql_dev
+        MYSQL_PASSWORD: password123
+        MYSQL_DATABASE: aqoursql_test
+    steps:
+    - checkout
+    - run:
+        name: Install dependencies
+        command: |
+          echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
+          apk update
+          apk add curl git mariadb-client dockerize
+    - run:
+        name: Wait for DB startup
+        command: |
+          dockerize dockerize -wait tcp://localhost:3306 -timeout 1m
+    - run:
+        name: Import DDL
+        command: |
+          mysql -h127.0.0.1 -P3306 -uroot -proot aqoursql_test < sql/ddl/aqoursql.sql
+    - restore_cache:
+        key: clj-rest-api-{{ checksum "project.clj" }}
+    - run: lein deps
+    - run: lein test-coverage
+    - run: lein lint
+    - run: bash <(curl -s https://codecov.io/bash) -f '!*.txt'
+    - save_cache:
+        key: clj-rest-api-{{ checksum "project.clj" }}
+        paths:
+        - /root/.lein
+        - /root/.m2
+    - run:
+        name: Save test results
+        command: |
+          mkdir -p ~/test-results/clojure-test
+          if [ -f target/coverage/junit.xml ]; then
+            cp target/coverage/junit.xml ~/test-results/clojure-test/
+          fi
+        when: always
+    - store_test_results:
+        path: ~/test-results

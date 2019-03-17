@@ -1,0 +1,35 @@
+version: "3"
+services:
+  mysql:
+    image: mariadb:10.4.0
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3316:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: aqoursql_dev
+      MYSQL_PASSWORD: password123
+      MYSQL_DATABASE: aqoursql
+      TZ: "Asia/Tokyo"
+
+  mysql-test:
+    image: mariadb:10.4.0
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3317:3306"
+    volumes:
+      - mysql-test-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: aqoursql_dev
+      MYSQL_PASSWORD: password123
+      MYSQL_DATABASE: aqoursql_test
+      TZ: "Asia/Tokyo"
+
+volumes:
+  mysql-data:
+    driver: local
+  mysql-test-data:
+    driver: local

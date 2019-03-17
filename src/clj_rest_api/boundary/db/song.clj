@@ -23,7 +23,7 @@
     (db/select db (cond-> sql-song-with-artist
                     name (merge-where [:like :s.name (str \% name \%)])
                     artist-id (merge-where [:= :s.artist-id artist-id])
-                    true (merge-order-by [:s.id :asc]) )))
+                    true (merge-order-by [:s.id :asc]))))
   (find-song-by-id [db id]
     (db/select-first db (merge-where sql-song-with-artist
                                      [:= :s.id id]))))
