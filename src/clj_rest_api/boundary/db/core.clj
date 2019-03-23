@@ -74,7 +74,7 @@
   (-> (jdbc/insert! spec table row-map {:entities (comp (jdbc/quoted identifier-quote)
                                                         util/->snake_case)})
       first
-      :generated_key))
+      :insert_id))
 
 (s/fdef execute!
   :args (s/cat :db ::db

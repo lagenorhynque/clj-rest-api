@@ -34,9 +34,32 @@
                :id ::artist-id)
   :ret (s/nilable ::song))
 
+(s/fdef create-song!
+  :args (s/cat :db ::db/db
+               :tx-data (s/keys :req-un [::name
+                                         ::artist-id
+                                         ::release-date]))
+  :ret ::db/row-id)
+
+(s/fdef update-song!
+  :args (s/cat :db ::db/db
+               :tx-data (s/keys :req-un [::id]
+                                :opt-un [::name
+                                         ::artist-id
+                                         ::release-date]))
+  :ret ::db/row-count)
+
+(s/fdef delete-song!
+  :args (s/cat :db ::db/db
+               :id ::id)
+  :ret ::db/row-count)
+
 (defprotocol Song
   (find-songs [db tx-data])
-  (find-song-by-id [db id]))
+  (find-song-by-id [db id])
+  (create-song! [db tx-data])
+  (update-song! [db tx-data])
+  (delete-song! [db id]))
 
 (def sql-song-with-artist
   (sql/build
@@ -56,4 +79,19 @@
                     true (merge-order-by [:s.id :asc]))))
   (find-song-by-id [db id]
     (db/select-first db (merge-where sql-song-with-artist
-                                     [:= :s.id id]))))
+                                     [:= :s.id id])))
+  (create-song! [db tx-data]
+    (db/insert! db :song (select-keys tx-data [:name
+                                               :artist-id
+                                               :release-date])))
+  (update-song! [db {:keys [id] :as tx-data}]
+    (db/execute! db (sql/build
+                     :update :song
+                     :set (select-keys tx-data [:name
+                                                :artist-id
+                                                :release-date])
+                     :where [:= :id id])))
+  (delete-song! [db id]
+    (db/execute! db (sql/build
+                     :delete-from :song
+                     :where [:= :id id]))))

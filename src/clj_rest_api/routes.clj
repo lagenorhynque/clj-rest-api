@@ -24,5 +24,11 @@
     #(route/expand-routes
       #{["/api/songs" :get
          (conj common-interceptors `songs/list-songs)]
+        ["/api/songs" :post
+         (conj common-interceptors `songs/create-song)]
         ["/api/songs/:song-id" :get
-         (conj common-interceptors `songs/fetch-song-by-id)]})))
+         (conj common-interceptors `songs/fetch-song-by-id)]
+        ["/api/songs/:song-id" :put
+         (conj common-interceptors `songs/update-song)]
+        ["/api/songs/:song-id" :delete
+         (conj common-interceptors `songs/delete-song)]})))
