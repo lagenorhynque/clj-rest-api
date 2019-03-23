@@ -32,7 +32,10 @@
    [[:song-id st/required st/integer-str st/positive]]})
 
 (defn list-songs [{:keys [db tx-data]}]
-  (response/ok {:data (db.song/find-songs db tx-data)}))
+  (let [{:keys [artist-id]} tx-data]
+    (if (or (not artist-id) (db.artist/find-artist-by-id db artist-id))
+      (response/ok {:data (db.song/find-songs db tx-data)})
+      (response/not-found {:errors {:artist-id "doesn't exist"}}))))
 
 (defn create-song [{:keys [db tx-data]}]
   (with-transaction [db]
@@ -51,17 +54,19 @@
 (defn update-song [{:keys [db tx-data]}]
   (with-transaction [db]
     (let [{:keys [song-id artist-id]} tx-data]
-      (if-let [song (db.song/find-song-by-id db song-id)]
-        (if (or (not artist-id) (db.artist/find-artist-by-id db artist-id))
-          (do (db.song/update-song! db (set/rename-keys tx-data {:song-id :id}))
-              (response/no-content))
-          (response/not-found {:errors {:artist-id "doesn't exist"}}))
-        (response/not-found {:errors {:song-id "doesn't exist"}})))))
+      (if (seq (select-keys tx-data [:name :artist-id :release-date]))
+        (if (db.song/find-song-by-id db song-id)
+          (if (or (not artist-id) (db.artist/find-artist-by-id db artist-id))
+            (do (db.song/update-song! db (set/rename-keys tx-data {:song-id :id}))
+                (response/no-content))
+            (response/not-found {:errors {:artist-id "doesn't exist"}}))
+          (response/not-found {:errors {:song-id "doesn't exist"}}))
+        (response/bad-request {:errors {:song "there's nothing to update"}})))))
 
 (defn delete-song [{:keys [db tx-data]}]
   (with-transaction [db]
     (let [{:keys [song-id]} tx-data]
-      (if-let [song (db.song/find-song-by-id db song-id)]
+      (if (db.song/find-song-by-id db song-id)
         (do (db.song/delete-song! db song-id)
             (response/no-content))
         (response/not-found {:errors {:song-id "doesn't exist"}})))))
