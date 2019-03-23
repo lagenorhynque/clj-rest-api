@@ -7,6 +7,11 @@
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route :as route]))
 
+;;; validation rules
+
+(def validation-schemas
+  songs/validations)
+
 ;;; routing
 
 (defmethod ig/init-key ::routes
@@ -14,6 +19,7 @@
   (let [common-interceptors [(body-params/body-params)
                              http/json-body
                              interceptor/attach-tx-data
+                             (interceptor/validate validation-schemas)
                              (interceptor/attach-database db)]]
     #(route/expand-routes
       #{["/api/songs" :get
