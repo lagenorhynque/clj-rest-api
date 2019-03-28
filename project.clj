@@ -44,14 +44,13 @@
                   :aliases {"rebel" ^{:doc "Run REPL with rebel-readline."}
                             ["trampoline" "run" "-m" "rebel-readline.main"]
                             "test-coverage" ^{:doc "Execute cloverage."}
-                            ["with-profile" "test"
-                             "cloverage" "--ns-exclude-regex" "^(:?dev|user)$" "--codecov" "--junit"]
+                            ["cloverage" "--ns-exclude-regex" "^(:?dev|user)$" "--codecov" "--junit"]
                             "lint" ^{:doc "Execute cljfmt check, eastwood and kibit."}
                             ["do"
                              ["cljfmt" "check"]
                              ["eastwood" "{:config-files [\"dev/resources/eastwood_config.clj\"]
-                                          :source-paths [\"src\"]
-                                          :test-paths []}"]
+                                           :source-paths [\"src\"]
+                                           :test-paths []}"]
                              ["kibit"]]}
                   :injections [(require 'pjstadig.humane-test-output)
                                (pjstadig.humane-test-output/activate!)]
