@@ -13,7 +13,7 @@
                  [metosin/ring-http-response "0.9.1"]
                  [org.clojure/clojure "1.10.0"]
                  [org.mariadb.jdbc/mariadb-java-client "2.4.1"]]
-  :plugins [[duct/lein-duct "0.11.2"]]
+  :plugins [[duct/lein-duct "0.12.0"]]
   :main ^:skip-aot clj-rest-api.main
   :resource-paths ["resources" "target/resources"]
   :prep-tasks     ["javac" "compile" ["run" ":duct/compiler"]]
