@@ -1,0 +1,29 @@
+<configuration scan="true" scanPeriod="10 seconds">
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      <layout class="cambium.logback.json.FlatJsonLayout">
+        <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+          <prettyPrint>true</prettyPrint>
+        </jsonFormatter>
+        <includeTimestamp>true</includeTimestamp>
+        <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</timestampFormat>
+        <includeContextName>false</includeContextName>
+        <appendLineSeparator>true</appendLineSeparator>
+      </layout>
+      <charset>UTF-8</charset>
+    </encoder>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>logs/clj-rest-api-%d{yyyy-MM-dd}.log</fileNamePattern>
+    </rollingPolicy>
+
+    <prudent>true</prudent>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="FILE" />
+  </root>
+
+  <logger name="dev" level="ALL" />
+  <logger name="clj-rest-api" level="DEBUG" />
+</configuration>

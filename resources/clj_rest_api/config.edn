@@ -14,7 +14,7 @@
  :duct.profile/local #duct/include "local"
  :duct.profile/prod  {}
 
- :duct.module/logging {}
+ :duct.module/cambium {}
 
  :duct.module/sql
  {:database-url #duct/env "DATABASE_URL"}
