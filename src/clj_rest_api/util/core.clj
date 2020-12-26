@@ -1,6 +1,7 @@
 (ns clj-rest-api.util.core
-  (:require [camel-snake-kebab.core :as csk]
-            [camel-snake-kebab.extras :refer [transform-keys]]))
+  (:require
+   [camel-snake-kebab.core :as csk]
+   [camel-snake-kebab.extras :refer [transform-keys]]))
 
 (defn ->kebab-case [v]
   (csk/->kebab-case v :separator \_))

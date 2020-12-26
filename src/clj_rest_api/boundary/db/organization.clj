@@ -1,5 +1,6 @@
 (ns clj-rest-api.boundary.db.organization
-  (:require [clojure.spec.alpha :as s]))
+  (:require
+   [clojure.spec.alpha :as s]))
 
 (s/def ::id nat-int?)
 (s/def ::name string?)

@@ -117,10 +117,24 @@ $ lein test-coverage
 $ open target/coverage/index.html
 ```
 
-### Linting ([`cljfmt check`](https://github.com/weavejester/cljfmt), [`eastwood`](https://github.com/jonase/eastwood), [`kibit`](https://github.com/jonase/kibit))
+### Linting
+
+- [`eastwood`](https://github.com/jonase/eastwood), [`kibit`](https://github.com/jonase/kibit)
 
 ```sh
 $ lein lint
+```
+
+- [`cljstyle check`](https://github.com/greglook/cljstyle), [`clj-kondo`](https://github.com/borkdude/clj-kondo), [`joker`](https://github.com/candid82/joker)
+
+```sh
+$ make lint
+```
+
+- fixing formatting
+
+```sh
+$ make cljstyle-fix
 ```
 
 ### API Documentation ([Codox](https://github.com/weavejester/codox))

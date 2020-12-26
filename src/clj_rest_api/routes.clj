@@ -1,11 +1,12 @@
 (ns clj-rest-api.routes
-  (:require [clj-rest-api.handler.songs :as songs]
-            [clj-rest-api.interceptor :as interceptor]
-            [clj-rest-api.util.time]
-            [integrant.core :as ig]
-            [io.pedestal.http :as http]
-            [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.route :as route]))
+  (:require
+   [clj-rest-api.handler.songs :as songs]
+   [clj-rest-api.interceptor :as interceptor]
+   [clj-rest-api.util.time]
+   [integrant.core :as ig]
+   [io.pedestal.http :as http]
+   [io.pedestal.http.body-params :as body-params]
+   [io.pedestal.http.route :as route]))
 
 ;;; validation rules
 

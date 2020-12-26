@@ -1,0 +1,10 @@
+{:ignored-file-regexes [#"dev/.+"
+                        #"profiles.clj"]
+ :ignored-unused-namespaces [clj-rest-api.boundary.db.core
+                             clj-rest-api.util.time
+                             duct.database.sql]
+ :known-macros [clj-rest-api.test-helper.core/with-system
+                clojure.spec.alpha/fdef
+                clojure.test.check.clojure-test/defspec
+                clojure.test.check.properties/for-all]
+ :known-tags []}

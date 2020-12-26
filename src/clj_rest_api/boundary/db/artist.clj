@@ -1,10 +1,11 @@
 (ns clj-rest-api.boundary.db.artist
-  (:require [clj-rest-api.util.const :as const]
-            [clj-rest-api.boundary.db.core :as db]
-            [clojure.spec.alpha :as s]
-            [duct.database.sql]
-            [honeysql.core :as sql]
-            [honeysql.helpers :refer [merge-where]]))
+  (:require
+   [clj-rest-api.boundary.db.core :as db]
+   [clj-rest-api.util.const :as const]
+   [clojure.spec.alpha :as s]
+   [duct.database.sql]
+   [honeysql.core :as sql]
+   [honeysql.helpers :refer [merge-where]]))
 
 (s/def ::id nat-int?)
 (s/def ::type const/artist-types)

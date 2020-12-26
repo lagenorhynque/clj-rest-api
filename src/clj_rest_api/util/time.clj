@@ -1,7 +1,10 @@
 (ns clj-rest-api.util.time
-  (:require [cheshire.generate :refer [add-encoder]]
-            [java-time.format :as time.format])
-  (:import (java.time LocalDate)))
+  (:require
+   [cheshire.generate :refer [add-encoder]]
+   [java-time.format :as time.format])
+  (:import
+   (java.time
+    LocalDate)))
 
 ;;; JSON encoding
 

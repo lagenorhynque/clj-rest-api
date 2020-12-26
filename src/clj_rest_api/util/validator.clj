@@ -1,7 +1,7 @@
 (ns clj-rest-api.util.validator
-  (:require [java-time.format :as time.format]
-            [java-time.local :as time.local]
-            [struct.core :as st]))
+  (:require
+   [java-time.format :as time.format]
+   [java-time.local :as time.local]))
 
 (def date-str
   (let [fmt (time.format/formatter :iso-local-date)]

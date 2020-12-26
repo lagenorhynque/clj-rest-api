@@ -14,3 +14,4 @@ pom.xml.asc
 /dev/src/local.clj
 .rebel_readline_history
 .eastwood
+.clj-kondo/.cache

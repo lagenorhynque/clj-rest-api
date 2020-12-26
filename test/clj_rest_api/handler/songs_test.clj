@@ -1,8 +1,8 @@
 (ns clj-rest-api.handler.songs-test
-  (:require [clj-rest-api.handler.songs :as sut]
-            [clj-rest-api.test-helper.core :as helper :refer [with-db-data with-system]]
-            [clj-rest-api.test-helper.db-data :as db-data]
-            [clojure.test :as t]))
+  (:require
+   [clj-rest-api.test-helper.core :as helper :refer [with-db-data with-system]]
+   [clj-rest-api.test-helper.db-data :as db-data]
+   [clojure.test :as t]))
 
 (t/use-fixtures
   :once

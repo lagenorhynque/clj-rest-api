@@ -1,11 +1,13 @@
 (ns clj-rest-api.boundary.db.core
-  (:require [clj-rest-api.util.core :as util]
-            [clojure.java.jdbc :as jdbc]
-            [clojure.spec.alpha :as s]
-            [duct.database.sql]
-            [honeysql.core :as sql]
-            [integrant.core :as ig])
-  (:import (java.time LocalDate)))
+  (:require
+   [clj-rest-api.util.core :as util]
+   [clojure.java.jdbc :as jdbc]
+   [clojure.spec.alpha :as s]
+   [duct.database.sql]
+   [honeysql.core :as sql])
+  (:import
+   (java.time
+    LocalDate)))
 
 ;;; JDBC date conversion
 

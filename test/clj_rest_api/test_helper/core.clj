@@ -1,14 +1,15 @@
 (ns clj-rest-api.test-helper.core
-  (:require [clj-rest-api.boundary.db.core]
-            [clj-rest-api.test-helper.db :refer [insert-db-data! truncate-all-tables!]]
-            [clj-rest-api.util.core :as util]
-            [cheshire.core :as cheshire]
-            [clj-http.client :as client]
-            [clojure.java.io :as io]
-            [clojure.spec.alpha :as s]
-            [duct.core :as duct]
-            [integrant.core :as ig]
-            [orchestra.spec.test :as stest]))
+  (:require
+   [cheshire.core :as cheshire]
+   [clj-http.client :as client]
+   [clj-rest-api.boundary.db.core]
+   [clj-rest-api.test-helper.db :refer [insert-db-data! truncate-all-tables!]]
+   [clj-rest-api.util.core :as util]
+   [clojure.java.io :as io]
+   [clojure.spec.alpha :as s]
+   [duct.core :as duct]
+   [integrant.core :as ig]
+   [orchestra.spec.test :as stest]))
 
 (duct/load-hierarchy)
 

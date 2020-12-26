@@ -1,17 +1,18 @@
 (ns dev
   (:refer-clojure :exclude [test])
-  (:require [clojure.java.io :as io]
-            [clojure.repl :refer :all]
-            [clojure.spec.alpha :as s]
-            [clojure.tools.namespace.repl :refer [refresh]]
-            [duct.core :as duct]
-            [duct.core.repl :as duct-repl]
-            [eftest.runner :as eftest]
-            [fipp.edn :refer [pprint]]
-            [integrant.core :as ig]
-            [integrant.repl :refer [clear halt go init prep]]
-            [integrant.repl.state :refer [config system]]
-            [orchestra.spec.test :as stest]))
+  (:require
+   [clojure.java.io :as io]
+   [clojure.repl :refer :all]
+   [clojure.spec.alpha :as s]
+   [clojure.tools.namespace.repl :refer [refresh]]
+   [duct.core :as duct]
+   [duct.core.repl :as duct-repl]
+   [eftest.runner :as eftest]
+   [fipp.edn :refer [pprint]]
+   [integrant.core :as ig]
+   [integrant.repl :refer [clear halt go init prep]]
+   [integrant.repl.state :refer [config system]]
+   [orchestra.spec.test :as stest]))
 
 (duct/load-hierarchy)
 

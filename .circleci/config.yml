@@ -1,9 +1,9 @@
 version: 2.1
 jobs:
   build:
-    working_directory: /root/clj-rest-api
+    working_directory: ~/clj-rest-api
     docker:
-    - image: clojure:lein-2.9.1-alpine
+    - image: circleci/clojure:openjdk-11-lein-2.9.5
       environment:
         TZ: Asia/Tokyo
         TEST_DATABASE_URL: "jdbc:mysql://localhost:3306/aqoursql_test?user=aqoursql_dev&password=password123"
@@ -19,13 +19,12 @@ jobs:
     - run:
         name: Install dependencies
         command: |
-          echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
-          apk update
-          apk add curl git mariadb-client dockerize
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
     - run:
         name: Wait for DB startup
         command: |
-          dockerize dockerize -wait tcp://localhost:3306 -timeout 1m
+          dockerize -wait tcp://localhost:3306 -timeout 1m
     - run:
         name: Import DDL
         command: |
@@ -35,12 +34,32 @@ jobs:
     - run: lein deps
     - run: lein test-coverage
     - run: lein lint
+    - run:
+        name: Install static code analysis tools
+        environment:
+          CLJSTYLE_VERSION: 0.14.0
+          CLJ_KONDO_VERSION: 2020.12.12
+          JOKER_VERSION: 0.15.7
+        command: |
+          # cljstyle
+          wget https://github.com/greglook/cljstyle/releases/download/${CLJSTYLE_VERSION}/cljstyle_${CLJSTYLE_VERSION}_linux.tar.gz
+          tar -xzf cljstyle_${CLJSTYLE_VERSION}_linux.tar.gz
+          sudo mv -f cljstyle /usr/local/bin/
+          # clj-kondo
+          curl -sLO https://raw.githubusercontent.com/borkdude/clj-kondo/master/script/install-clj-kondo
+          chmod +x install-clj-kondo
+          sudo ./install-clj-kondo --version ${CLJ_KONDO_VERSION}
+          # Joker
+          wget https://github.com/candid82/joker/releases/download/v${JOKER_VERSION}/joker-${JOKER_VERSION}-linux-amd64.zip
+          unzip -qq joker-${JOKER_VERSION}-linux-amd64.zip
+          sudo mv -f joker /usr/local/bin/
+    - run: make lint
     - run: bash <(curl -s https://codecov.io/bash) -f '!*.txt'
     - save_cache:
         key: clj-rest-api-{{ checksum "project.clj" }}
         paths:
-        - /root/.lein
-        - /root/.m2
+        - ~/.lein
+        - ~/.m2
     - run:
         name: Save test results
         command: |

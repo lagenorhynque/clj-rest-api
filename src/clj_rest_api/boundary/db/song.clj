@@ -1,11 +1,14 @@
 (ns clj-rest-api.boundary.db.song
-  (:require [clj-rest-api.boundary.db.artist :as artist]
-            [clj-rest-api.boundary.db.core :as db]
-            [clojure.spec.alpha :as s]
-            [duct.database.sql]
-            [honeysql.core :as sql]
-            [honeysql.helpers :refer [merge-order-by merge-where]])
-  (:import (java.time LocalDate)))
+  (:require
+   [clj-rest-api.boundary.db.artist :as artist]
+   [clj-rest-api.boundary.db.core :as db]
+   [clojure.spec.alpha :as s]
+   [duct.database.sql]
+   [honeysql.core :as sql]
+   [honeysql.helpers :refer [merge-order-by merge-where]])
+  (:import
+   (java.time
+    LocalDate)))
 
 (s/def ::id nat-int?)
 (s/def ::name string?)

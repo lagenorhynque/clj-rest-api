@@ -1,7 +1,8 @@
 (ns clj-rest-api.interceptor
-  (:require [clj-rest-api.util.core :as util]
-            [ring.util.http-response :as response]
-            [struct.core :as st]))
+  (:require
+   [clj-rest-api.util.core :as util]
+   [ring.util.http-response :as response]
+   [struct.core :as st]))
 
 (def attach-tx-data
   {:name ::attach-tx-data

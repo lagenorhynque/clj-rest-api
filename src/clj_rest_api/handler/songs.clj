@@ -1,13 +1,14 @@
 (ns clj-rest-api.handler.songs
-  (:require [clj-rest-api.boundary.db.artist :as db.artist]
-            [clj-rest-api.boundary.db.core :refer [with-transaction]]
-            [clj-rest-api.boundary.db.member :as db.member]
-            [clj-rest-api.boundary.db.song :as db.song]
-            [clj-rest-api.util.validator :as validator]
-            [clojure.set :as set]
-            [io.pedestal.http.route :as route]
-            [ring.util.http-response :as response]
-            [struct.core :as st]))
+  (:require
+   [clj-rest-api.boundary.db.artist :as db.artist]
+   [clj-rest-api.boundary.db.core :refer [with-transaction]]
+   [clj-rest-api.boundary.db.member :as db.member]
+   [clj-rest-api.boundary.db.song :as db.song]
+   [clj-rest-api.util.validator :as validator]
+   [clojure.set :as set]
+   [io.pedestal.http.route :as route]
+   [ring.util.http-response :as response]
+   [struct.core :as st]))
 
 (def validations
   {::list-songs

@@ -1,11 +1,12 @@
 (ns clj-rest-api.boundary.db.member
-  (:require [clj-rest-api.boundary.db.artist :as artist]
-            [clj-rest-api.boundary.db.core :as db]
-            [clj-rest-api.boundary.db.organization :as organization]
-            [clojure.spec.alpha :as s]
-            [duct.database.sql]
-            [honeysql.core :as sql]
-            [honeysql.helpers :refer [merge-join merge-order-by merge-where]]))
+  (:require
+   [clj-rest-api.boundary.db.artist :as artist]
+   [clj-rest-api.boundary.db.core :as db]
+   [clj-rest-api.boundary.db.organization :as organization]
+   [clojure.spec.alpha :as s]
+   [duct.database.sql]
+   [honeysql.core :as sql]
+   [honeysql.helpers :refer [merge-join merge-order-by merge-where]]))
 
 (s/def ::id nat-int?)
 (s/def ::name string?)
