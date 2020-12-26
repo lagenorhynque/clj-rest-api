@@ -7,8 +7,8 @@ jobs:
       environment:
         TZ: Asia/Tokyo
         TEST_DATABASE_URL: "jdbc:mysql://localhost:3306/aqoursql_test?user=aqoursql_dev&password=password123"
-    - image: mariadb:10.4.0
-      command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    - image: mariadb:10.5.8
+      command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
       environment:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_USER: aqoursql_dev

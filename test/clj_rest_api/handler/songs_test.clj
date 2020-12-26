@@ -101,12 +101,6 @@
                               :artist-id 4
                               :release-date "2016-06-08"
                               :artist-name "Guilty Kiss"
-                              :artist-type 1}
-                             {:id 5
-                              :name "SELF CONTROL!!"
-                              :artist-id 5
-                              :release-date "2016-11-30"
-                              :artist-name "Saint Snow"
                               :artist-type 1}]}
                      (helper/<-json body))))
           (let [{:keys [status body]}
