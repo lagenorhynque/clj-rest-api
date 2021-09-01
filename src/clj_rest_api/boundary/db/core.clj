@@ -33,7 +33,7 @@
 
 (s/fdef with-transaction
   :args (s/cat :binding (s/coll-of any?
-                                   :kind vector
+                                   :kind vector?
                                    :count 1)
                :body (s/* any?)))
 
