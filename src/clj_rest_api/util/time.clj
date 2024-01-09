@@ -1,8 +1,10 @@
 (ns clj-rest-api.util.time
   (:require
    [cheshire.generate :refer [add-encoder]]
-   [java-time.format :as time.format])
+   [java-time.api])
   (:import
+   (com.fasterxml.jackson.core
+    JsonGenerator)
    (java.time
     LocalDate)))
 
@@ -10,5 +12,6 @@
 
 (add-encoder
  LocalDate
- (fn [^LocalDate d json-generator]
-   (.writeString json-generator (time.format/format :iso-local-date d))))
+ (fn [^LocalDate d ^JsonGenerator json-generator]
+   (.writeString json-generator
+                 ^String (java-time.api/format :iso-local-date d))))
