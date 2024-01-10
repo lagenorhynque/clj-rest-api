@@ -33,10 +33,10 @@ for the project.
 # Start local DB
 $ docker compose up -d
 # Import DB schema
-$ docker compose exec -T mysql mysql -uroot -proot aqoursql < sql/ddl/aqoursql.sql
-$ docker compose exec -T mysql-test mysql -uroot -proot aqoursql_test < sql/ddl/aqoursql.sql
+$ docker compose exec -T mariadb mariadb -uroot -proot aqoursql < sql/ddl/aqoursql.sql
+$ docker compose exec -T mariadb-test mariadb -uroot -proot aqoursql_test < sql/ddl/aqoursql.sql
 # Seed DB
-$ docker compose exec -T mysql mysql -uroot -proot aqoursql < sql/dml/seed.sql
+$ docker compose exec -T mariadb mariadb -uroot -proot aqoursql < sql/dml/seed.sql
 ```
 
 ### Development environment

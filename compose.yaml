@@ -1,37 +1,36 @@
-version: "3"
 services:
-  mysql:
-    image: mariadb:10.5.8
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
+  mariadb:
+    image: mariadb:11.2.2
+    command: mariadbd --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
     ports:
       - "3316:3306"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mariadb-data:/var/lib/mysql
       - ./mysql/conf.d:/etc/mysql/conf.d
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: aqoursql_dev
-      MYSQL_PASSWORD: password123
-      MYSQL_DATABASE: aqoursql
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: aqoursql_dev
+      MARIADB_PASSWORD: password123
+      MARIADB_DATABASE: aqoursql
       TZ: "Asia/Tokyo"
 
-  mysql-test:
-    image: mariadb:10.5.8
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
+  mariadb-test:
+    image: mariadb:11.2.2
+    command: mariadbd --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
     ports:
       - "3317:3306"
     volumes:
-      - mysql-test-data:/var/lib/mysql
+      - mariadb-test-data:/var/lib/mysql
       - ./mysql/conf.d:/etc/mysql/conf.d
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: aqoursql_dev
-      MYSQL_PASSWORD: password123
-      MYSQL_DATABASE: aqoursql_test
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: aqoursql_dev
+      MARIADB_PASSWORD: password123
+      MARIADB_DATABASE: aqoursql_test
       TZ: "Asia/Tokyo"
 
 volumes:
-  mysql-data:
+  mariadb-data:
     driver: local
-  mysql-test-data:
+  mariadb-test-data:
     driver: local
