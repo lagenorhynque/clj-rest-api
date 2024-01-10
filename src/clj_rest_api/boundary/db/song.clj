@@ -4,8 +4,7 @@
    [clj-rest-api.boundary.db.core :as db]
    [clojure.spec.alpha :as s]
    [duct.database.sql]
-   [honeysql.core :as sql]
-   [honeysql.helpers :refer [merge-order-by merge-where]])
+   [honey.sql.helpers :refer [order-by where]])
   (:import
    (java.time
     LocalDate)))
@@ -65,36 +64,33 @@
   (delete-song! [db id]))
 
 (def sql-song-with-artist
-  (sql/build
-   :select [:s.*
+  {:select [:s.*
             [:a.name :artist-name]
             [:a.type :artist-type]]
    :from [[:song :s]]
    :join [[:artist :a]
-          [:= :s.artist-id :a.id]]))
+          [:= :s.artist-id :a.id]]})
 
 (extend-protocol Song
   duct.database.sql.Boundary
   (find-songs [db {:keys [name artist-id]}]
     (db/select db (cond-> sql-song-with-artist
-                    name (merge-where [:like :s.name (str \% name \%)])
-                    artist-id (merge-where [:= :s.artist-id artist-id])
-                    true (merge-order-by [:s.id :asc]))))
+                    name (where [:like :s.name (str \% name \%)])
+                    artist-id (where [:= :s.artist-id artist-id])
+                    true (order-by [:s.id :asc]))))
   (find-song-by-id [db id]
-    (db/select-first db (merge-where sql-song-with-artist
-                                     [:= :s.id id])))
+    (db/select-first db (where sql-song-with-artist
+                               [:= :s.id id])))
   (create-song! [db tx-data]
     (db/insert! db :song (select-keys tx-data [:name
                                                :artist-id
                                                :release-date])))
   (update-song! [db {:keys [id] :as tx-data}]
-    (db/execute! db (sql/build
-                     :update :song
+    (db/execute! db {:update :song
                      :set (select-keys tx-data [:name
                                                 :artist-id
                                                 :release-date])
-                     :where [:= :id id])))
+                     :where [:= :id id]}))
   (delete-song! [db id]
-    (db/execute! db (sql/build
-                     :delete-from :song
-                     :where [:= :id id]))))
+    (db/execute! db {:delete-from :song
+                     :where [:= :id id]})))

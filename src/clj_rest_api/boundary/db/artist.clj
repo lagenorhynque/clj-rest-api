@@ -4,8 +4,7 @@
    [clj-rest-api.util.const :as const]
    [clojure.spec.alpha :as s]
    [duct.database.sql]
-   [honeysql.core :as sql]
-   [honeysql.helpers :refer [merge-where]]))
+   [honey.sql.helpers :refer [where]]))
 
 (s/def ::id nat-int?)
 (s/def ::type const/artist-types)
@@ -25,12 +24,11 @@
   (find-artist-by-id [db id]))
 
 (def sql-artist
-  (sql/build
-   :select [:a.*]
-   :from [[:artist :a]]))
+  {:select [:a.*]
+   :from [[:artist :a]]})
 
 (extend-protocol Artist
   duct.database.sql.Boundary
   (find-artist-by-id [db id]
-    (db/select-first db (merge-where sql-artist
-                                     [:= :a.id id]))))
+    (db/select-first db (where sql-artist
+                               [:= :a.id id]))))

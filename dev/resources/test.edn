@@ -1,5 +1,5 @@
 {:duct.database.sql/hikaricp
- {:jdbc-url #duct/env ["TEST_DATABASE_URL" :or "jdbc:mysql://localhost:3317/aqoursql_test?user=aqoursql_dev&password=password123"]}
+ {:jdbc-url #duct/env ["TEST_DATABASE_URL" :or "jdbc:mariadb://localhost:3317/aqoursql_test?user=aqoursql_dev&password=password123"]}
 
  :duct.server/pedestal
  {:service #:io.pedestal.http{:port 9991}}}

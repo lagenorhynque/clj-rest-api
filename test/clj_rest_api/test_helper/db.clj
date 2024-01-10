@@ -1,9 +1,8 @@
 (ns clj-rest-api.test-helper.db
   (:require
    [clj-rest-api.boundary.db.core :as db]
-   [clojure.java.jdbc :as jdbc]
    [clojure.spec.alpha :as s]
-   [honeysql.core :as sql]))
+   [next.jdbc]))
 
 (s/def ::name string?)
 (s/def ::table (s/keys :req-un [::name]))
@@ -17,27 +16,26 @@
   :ret (s/coll-of ::table))
 
 (defn select-tables [db]
-  (db/select db (sql/build
-                 :select [[(sql/call :concat :table-schema "." :table-name) :name]]
+  (db/select db {:select [[[:concat :table-schema "." :table-name] :name]]
                  :from :information-schema.tables
-                 :where [:= :table-type "BASE TABLE"])))
+                 :where [:= :table-type "BASE TABLE"]}))
 
 (s/fdef truncate-table!
   :args (s/cat :db ::db/db
                :table ::table)
   :ret any?)
 
-(defn truncate-table! [{:keys [spec]} table]
-  (jdbc/execute! spec [(str "truncate table " (:name table))]))
+(defn truncate-table! [{{:keys [datasource]} :spec} table]
+  (next.jdbc/execute! datasource [(str "truncate table " (:name table))]))
 
 (s/fdef set-foreign-key-checks!
   :args (s/cat :db ::db/db
                :enabled? boolean?)
   :ret any?)
 
-(defn set-foreign-key-checks! [{:keys [spec]} enabled?]
-  (jdbc/execute! spec [(str "set @@session.foreign_key_checks = "
-                            (if enabled? 1 0))]))
+(defn set-foreign-key-checks! [{{:keys [datasource]} :spec} enabled?]
+  (next.jdbc/execute! datasource [(str "set @@session.foreign_key_checks = "
+                                       (if enabled? 1 0))]))
 
 (s/fdef insert-db-data!
   :args (s/cat :db ::db/db

@@ -5,8 +5,7 @@
    [clj-rest-api.boundary.db.organization :as organization]
    [clojure.spec.alpha :as s]
    [duct.database.sql]
-   [honeysql.core :as sql]
-   [honeysql.helpers :refer [merge-join merge-order-by merge-where]]))
+   [honey.sql.helpers :refer [join order-by where]]))
 
 (s/def ::id nat-int?)
 (s/def ::name string?)
@@ -31,23 +30,22 @@
   (find-members [db tx-data]))
 
 (def sql-member-with-organization
-  (sql/build
-   :select [:m.*
+  {:select [:m.*
             [:o.name :organization-name]]
    :from [[:member :m]]
    :join [[:organization :o]
-          [:= :m.organization-id :o.id]]))
+          [:= :m.organization-id :o.id]]})
 
 (defn where-=-artist-id [sql artist-id]
   (-> sql
-      (merge-join [:artist-member :am]
-                  [:= :m.id :am.member-id])
-      (merge-where [:= :am.artist-id artist-id])))
+      (join [:artist-member :am]
+            [:= :m.id :am.member-id])
+      (where [:= :am.artist-id artist-id])))
 
 (extend-protocol Member
   duct.database.sql.Boundary
   (find-members [db {:keys [name artist-id]}]
     (db/select db (cond-> sql-member-with-organization
-                    name (merge-where [:like :m.name (str \% name \%)])
+                    name (where [:like :m.name (str \% name \%)])
                     artist-id (where-=-artist-id artist-id)
-                    true (merge-order-by [:m.id :asc])))))
+                    true (order-by [:m.id :asc])))))

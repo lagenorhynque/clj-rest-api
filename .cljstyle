@@ -7,7 +7,7 @@
                                  fdef [[:inner 0]]
                                  for-all [[:inner 0]]
                                  when-valid [[:block 1]]
-                                 with-db-transaction [[:block 1]]}
+                                 with-transaction [[:block 1]]}
                        :list-indent 1}
          :namespaces {:indent-size 1}
          :types {:enabled? false}}}

@@ -1,2 +1,2 @@
 {:duct.database.sql/hikaricp
- {:jdbc-url "jdbc:mysql://localhost:3316/aqoursql?user=aqoursql_dev&password=password123"}}
+ {:jdbc-url "jdbc:mariadb://localhost:3316/aqoursql?user=aqoursql_dev&password=password123"}}

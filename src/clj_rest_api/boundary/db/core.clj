@@ -1,25 +1,31 @@
 (ns clj-rest-api.boundary.db.core
   (:require
    [clj-rest-api.util.core :as util]
-   [clojure.java.jdbc :as jdbc]
    [clojure.spec.alpha :as s]
    [duct.database.sql]
-   [honeysql.core :as sql])
+   [honey.sql :as sql]
+   [next.jdbc]
+   [next.jdbc.prepare]
+   [next.jdbc.quoted]
+   [next.jdbc.result-set]
+   [next.jdbc.sql])
   (:import
    (java.time
     LocalDate)))
 
 ;;; JDBC date conversion
 
-(extend-protocol jdbc/IResultSetReadColumn
+(extend-protocol next.jdbc.result-set/ReadableColumn
   java.sql.Date
-  (result-set-read-column [v _ _]
+  (read-column-by-index [^java.sql.Date v _ _]
+    (.toLocalDate v))
+  (read-column-by-label [^java.sql.Date v _ _]
     (.toLocalDate v)))
 
-(extend-protocol jdbc/ISQLValue
+(extend-protocol next.jdbc.prepare/SettableParameter
   LocalDate
-  (sql-value [v]
-    (java.sql.Date/valueOf v)))
+  (set-parameter [^LocalDate v ^java.sql.PreparedStatement stmt ^long ix]
+    (.setDate stmt ix (java.sql.Date/valueOf v))))
 
 ;;; DB access utilities
 
@@ -39,24 +45,26 @@
 
 (defmacro with-transaction [[db] & body]
   (if (simple-symbol? db)
-    `(jdbc/with-db-transaction [~db (:spec ~db)]
-       (let [~db (duct.database.sql/->Boundary ~db)]
+    `(next.jdbc/with-transaction [datasource# (:spec ~db)]
+       (let [~db (duct.database.sql/->Boundary {:datasource datasource#})]
          ~@body))
-    `(jdbc/with-db-transaction [~'db (:spec ~db)]
-       (let [~'db (duct.database.sql/->Boundary ~'db)]
+    `(next.jdbc/with-transaction [datasource# (:spec ~db)]
+       (let [~'db (duct.database.sql/->Boundary {:datasource datasource#})]
          ~@body))))
 
-(def quoting :mysql)
-(def identifier-quote \`)
+(def sql-format-opts
+  {:dialect :mysql
+   :allow-dashed-names? true
+   :quoted-snake true})
 
 (s/fdef select
   :args (s/cat :db ::db
                :sql-map ::sql-map)
   :ret (s/coll-of ::row-map))
 
-(defn select [{:keys [spec]} sql-map]
-  (jdbc/query spec (sql/format sql-map :quoting quoting)
-              {:identifiers util/->kebab-case}))
+(defn select [{{:keys [datasource]} :spec} sql-map]
+  (next.jdbc.sql/query datasource (sql/format sql-map sql-format-opts)
+                       {:builder-fn next.jdbc.result-set/as-unqualified-kebab-maps}))
 
 (s/fdef select-first
   :args (s/cat :db ::db
@@ -72,19 +80,25 @@
                :row-map ::row-map)
   :ret ::row-id)
 
-(defn insert! [{:keys [spec]} table row-map]
-  (-> (jdbc/insert! spec table row-map {:entities (comp (jdbc/quoted identifier-quote)
-                                                        util/->snake_case)})
-      first
-      :insert_id))
+(defn insert! [{{:keys [datasource]} :spec} table row-map]
+  (-> datasource
+      (next.jdbc.sql/insert! table
+                             row-map
+                             {:table-fn (next.jdbc.quoted/schema next.jdbc.quoted/mysql)
+                              :column-fn (comp util/->snake_case
+                                               next.jdbc.quoted/mysql)
+                              :builder-fn next.jdbc.result-set/as-unqualified-kebab-maps})
+      :insert-id))
 
 (s/fdef execute!
   :args (s/cat :db ::db
                :sql-map ::sql-map)
   :ret ::row-count)
 
-(defn execute! [{:keys [spec]} sql-map]
-  (first (jdbc/execute! spec (sql/format sql-map :quoting quoting))))
+(defn execute! [{{:keys [datasource]} :spec} sql-map]
+  (-> datasource
+      (next.jdbc/execute-one! (sql/format sql-map sql-format-opts))
+      :next.jdbc/update-count))
 
 (s/fdef insert-multi!
   :args (s/cat :db ::db
@@ -98,7 +112,9 @@
                :row-maps (s/coll-of ::row-map :min-count 1))
   :ret ::row-count)
 
-(defn insert-multi! [{:keys [spec]} table row-maps]
-  (first (jdbc/execute! spec (sql/format (sql/build :insert-into table
-                                                    :values row-maps)
-                                         :quoting quoting))))
+(defn insert-multi! [{{:keys [datasource]} :spec} table row-maps]
+  (-> datasource
+      (next.jdbc/execute-one!  (sql/format {:insert-into table
+                                            :values row-maps}
+                                           sql-format-opts))
+      :next.jdbc/update-count))
