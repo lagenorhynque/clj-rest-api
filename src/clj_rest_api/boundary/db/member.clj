@@ -46,6 +46,8 @@
   duct.database.sql.Boundary
   (find-members [db {:keys [name artist-id]}]
     (db/select db (cond-> sql-member-with-organization
-                    name (where [:like :m.name (str \% name \%)])
+                    name (where [:like
+                                 :m.name
+                                 (str \% (db/escape-like-param name) \%)])
                     artist-id (where-=-artist-id artist-id)
                     true (order-by [:m.id :asc])))))

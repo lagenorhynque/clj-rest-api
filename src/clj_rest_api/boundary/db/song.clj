@@ -75,7 +75,9 @@
   duct.database.sql.Boundary
   (find-songs [db {:keys [name artist-id]}]
     (db/select db (cond-> sql-song-with-artist
-                    name (where [:like :s.name (str \% name \%)])
+                    name (where [:like
+                                 :s.name
+                                 (str \% (db/escape-like-param name) \%)])
                     artist-id (where [:= :s.artist-id artist-id])
                     true (order-by [:s.id :asc]))))
   (find-song-by-id [db id]
