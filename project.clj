@@ -8,7 +8,7 @@
                  [com.github.seancorfield/next.jdbc "1.3.909"]
                  [duct.module.cambium "1.3.1" :exclusions [cheshire]]
                  [duct.module.pedestal "2.2.0"]
-                 [duct/core "0.8.0" :exclusions [medley]]
+                 [duct/core "0.8.1"]
                  [duct/module.sql "0.6.1"]
                  [funcool/struct "1.4.0" :exclusions [org.clojure/clojurescript]]
                  [integrant "0.8.0"]
